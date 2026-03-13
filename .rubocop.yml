@@ -1,0 +1,63 @@
+plugins:
+  - rubocop-rspec
+
+AllCops:
+  TargetRubyVersion: 3.0
+  NewCops: enable
+  SuggestExtensions: false
+
+Style/Documentation:
+  Enabled: false
+
+# Gem entry point must be named with hyphens (convention)
+Naming/FileName:
+  Exclude:
+    - 'lib/omniauth-gusto-oauth2.rb'
+
+# OAuth strategies inherently have complex methods
+Metrics/AbcSize:
+  Max: 25
+
+Metrics/MethodLength:
+  Max: 20
+
+Metrics/ParameterLists:
+  Max: 7
+
+# Standard gem pattern: dev deps in gemspec
+Gemspec/DevelopmentDependencies:
+  Enabled: false
+
+# Constants in strategy class are scoped correctly
+Lint/UselessConstantScoping:
+  Enabled: false
+
+# OmniAuth module naming doesn't follow standard Ruby conventions
+RSpec/SpecFilePathFormat:
+  Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+    - '*.gemspec'
+
+RSpec/ExampleLength:
+  Max: 20
+
+RSpec/MultipleExpectations:
+  Max: 8
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 8
+
+RSpec/NestedGroups:
+  Max: 4
+
+RSpec/VerifiedDoubles:
+  Exclude:
+    - 'spec/**/*'
+
+Layout/LineLength:
+  Max: 240
+  Exclude:
+    - 'spec/**/*'
