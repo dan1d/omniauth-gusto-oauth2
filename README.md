@@ -304,7 +304,7 @@ client.token_expired?(account.token_expires_at, buffer_seconds: 600)
 
 ```bash
 bundle install
-bundle exec rspec       # 40 examples, 0 failures
+bundle exec rspec       # 45 examples, 0 failures
 bundle exec rubocop     # 0 offenses
 ```
 
@@ -323,3 +323,7 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/dan1d/
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
 
 Copyright (c) 2026 dan1d
+
+---
+
+Created by [dan1d.dev](https://dan1d.dev)
