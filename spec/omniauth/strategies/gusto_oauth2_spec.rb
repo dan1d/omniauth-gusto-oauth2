@@ -121,6 +121,18 @@ RSpec.describe OmniAuth::Strategies::GustoOauth2 do
         expect { strategy.build_access_token }.to raise_error(OAuth2::Error)
       end
     end
+
+    context 'when token exchange fails with nil response on error' do
+      before do
+        error = OAuth2::Error.allocate
+        allow(error).to receive_messages(response: nil, message: 'OAuth2 error')
+        allow(auth_code).to receive(:get_token).and_raise(error)
+      end
+
+      it 'handles nil response gracefully' do
+        expect { strategy.build_access_token }.to raise_error(OAuth2::Error)
+      end
+    end
   end
 
   describe 'extra' do
@@ -256,6 +268,35 @@ RSpec.describe OmniAuth::Strategies::GustoOauth2 do
 
       it 'falls back to uuid from /v1/me' do
         expect(strategy.raw_info['uuid']).to eq('user-abc')
+      end
+    end
+
+    context 'when /v1/me returns nil companies key' do
+      let(:me_response) do
+        instance_double(OAuth2::Response, body: {
+          'uuid' => 'user-abc',
+          'email' => 'jane@example.com',
+          'first_name' => 'Jane',
+          'last_name' => 'Doe'
+        }.to_json)
+      end
+
+      it 'handles missing companies key gracefully' do
+        info = strategy.raw_info
+
+        expect(info['company_uuid']).to eq('company-xyz')
+        expect(info['company_name']).to be_nil
+      end
+    end
+
+    context 'when OmniAuth.logger is nil' do
+      before do
+        allow(OmniAuth).to receive(:logger).and_return(nil)
+        allow(access_token).to receive(:get).and_raise(StandardError.new('fail'))
+      end
+
+      it 'returns fallback without logging errors' do
+        expect(strategy.raw_info).to eq('uuid' => nil)
       end
     end
   end

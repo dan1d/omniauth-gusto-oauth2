@@ -184,6 +184,34 @@ RSpec.describe OmniAuth::GustoOauth2::TokenClient do
       end
     end
 
+    context 'when response body is invalid JSON on success' do
+      before do
+        stub_request(:post, 'https://api.gusto.com/oauth/token')
+          .to_return(status: 200, body: 'not json at all')
+      end
+
+      it 'returns a failed TokenResult with JSON parse error' do
+        result = client.refresh_token('some_token')
+
+        expect(result).to be_failure
+        expect(result.error).to include('Invalid JSON response')
+      end
+    end
+
+    context 'when an unexpected error occurs' do
+      before do
+        stub_request(:post, 'https://api.gusto.com/oauth/token')
+          .to_raise(RuntimeError.new('something broke'))
+      end
+
+      it 'returns a failed TokenResult with unexpected error' do
+        result = client.refresh_token('some_token')
+
+        expect(result).to be_failure
+        expect(result.error).to include('Unexpected error')
+      end
+    end
+
     context 'when response has no expires_in' do
       before do
         stub_request(:post, 'https://api.gusto.com/oauth/token')

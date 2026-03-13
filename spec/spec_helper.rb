@@ -4,7 +4,7 @@ require 'simplecov'
 SimpleCov.start do
   add_filter '/spec/'
   enable_coverage :branch
-  minimum_coverage line: 95, branch: 70
+  minimum_coverage line: 100, branch: 100
 end
 
 require 'omniauth-gusto-oauth2'
